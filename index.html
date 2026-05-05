@@ -5,6 +5,14 @@
 <title>ADTV Report — 2026-05-05</title>
 <style>
   body { font-family: 'Segoe UI', Arial, sans-serif; background: #f7fafc; margin: 0; padding: 32px; color: #2d3748; }
+  #pw-overlay { position: fixed; inset: 0; background: #f7fafc; display: flex; align-items: center; justify-content: center; z-index: 9999; }
+  #pw-box { background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); text-align: center; min-width: 300px; }
+  #pw-box h2 { margin: 0 0 8px; color: #1a202c; font-size: 1.3rem; }
+  #pw-box p { color: #718096; font-size: 0.9rem; margin: 0 0 24px; }
+  #pw-input { width: 100%; padding: 10px 14px; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 1rem; box-sizing: border-box; margin-bottom: 12px; outline: none; }
+  #pw-btn { width: 100%; padding: 10px; background: #2b6cb0; color: #fff; border: none; border-radius: 6px; font-size: 1rem; cursor: pointer; }
+  #pw-btn:hover { background: #2c5282; }
+  #pw-error { color: #e53e3e; font-size: 0.85rem; margin: 10px 0 0; display: none; }
   h1 { font-size: 1.6rem; margin-bottom: 4px; color: #1a202c; }
   .subtitle { font-size: 0.95rem; color: #718096; margin-bottom: 28px; }
   table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
@@ -21,6 +29,34 @@
 </style>
 </head>
 <body>
+<div id="pw-overlay">
+  <div id="pw-box">
+    <h2>ADTV Report</h2>
+    <p>請輸入密碼以查看報告</p>
+    <input id="pw-input" type="password" placeholder="密碼">
+    <button id="pw-btn" onclick="checkPw()">確認</button>
+    <p id="pw-error">密碼錯誤，請重試</p>
+  </div>
+</div>
+<script>
+const PW_HASH = '615ed7fb1504b0c724a296d7a69e6c7b2f9ea2c57c1d8206c5afdf392ebdfd25';
+async function checkPw() {
+  const val = document.getElementById('pw-input').value;
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(val));
+  const hex = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  if (hex === PW_HASH) {
+    document.getElementById('pw-overlay').style.display = 'none';
+  } else {
+    document.getElementById('pw-error').style.display = 'block';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
+  }
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('pw-input').addEventListener('keydown', e => { if (e.key === 'Enter') checkPw(); });
+  document.getElementById('pw-input').focus();
+});
+</script>
 <h1>ADTV Report</h1>
 <div class="subtitle">計算日期：2026-05-05 &nbsp;|&nbsp; 計算區間：2026-04-06 至 2026-05-01（前4完整日曆周）</div>
 <table>
