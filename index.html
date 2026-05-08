@@ -14,11 +14,13 @@
   #pw-btn:hover { background: #2c5282; }
   #pw-error { color: #e53e3e; font-size: 0.85rem; margin: 10px 0 0; display: none; }
   h1 { font-size: 1.6rem; margin-bottom: 4px; color: #1a202c; }
+  h2.section-title { font-size: 1.15rem; margin: 36px 0 12px; color: #2d3748; border-left: 4px solid #553c9a; padding-left: 10px; }
   .subtitle { font-size: 0.95rem; color: #718096; margin-bottom: 28px; }
-  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 8px; }
   th { background: #2b6cb0; color: #fff; padding: 10px 12px; text-align: center; font-size: 0.82rem; font-weight: 600; }
   th.week-header { background: #2c7a7b; }
   th.week-sub { background: #319795; font-size: 0.78rem; }
+  th.hist-header { background: #553c9a; font-size: 0.78rem; }
   .week-period { font-size: 0.7rem; font-weight: 400; opacity: 0.85; }
   td { padding: 10px 12px; text-align: center; font-size: 0.88rem; border-bottom: 1px solid #e2e8f0; }
   tr:last-child td { border-bottom: none; }
@@ -79,8 +81,18 @@ document.addEventListener('DOMContentLoaded', () => {
       <th class="week-sub">Days</th><th class="week-sub">Volume</th>
     </tr>
   </thead>
-  <tbody><tr><td class="symbol">WDH</td><td>2026-05-08</td><td>2026-04-27 ~ 2026-05-01</td><td>692,444</td><td>2026-04-06 ~ 2026-05-01</td><td>20</td><td>3,371,049</td><td>168,552</td><td>42,138</td><td>5</td><td>1,151,540</td><td>5</td><td>637,460</td><td>5</td><td>889,605</td><td>5</td><td>692,444</td></tr><tr><td class="symbol">GOTU</td><td>2026-05-08</td><td>2026-04-27 ~ 2026-05-01</td><td>1,980,742</td><td>2026-04-06 ~ 2026-05-01</td><td>20</td><td>6,701,386</td><td>335,069</td><td>83,767</td><td>5</td><td>1,512,439</td><td>5</td><td>1,839,409</td><td>5</td><td>1,368,796</td><td>5</td><td>1,980,742</td></tr><tr><td class="symbol">GCT</td><td>2026-05-08</td><td>2026-04-27 ~ 2026-05-01</td><td>3,111,466</td><td>2026-04-06 ~ 2026-05-01</td><td>20</td><td>13,996,929</td><td>699,846</td><td>174,962</td><td>5</td><td>4,181,162</td><td>5</td><td>3,717,497</td><td>5</td><td>2,986,804</td><td>5</td><td>3,111,466</td></tr><tr><td class="symbol">WRD</td><td>2026-05-08</td><td>2026-04-27 ~ 2026-05-01</td><td>8,289,664</td><td>2026-04-06 ~ 2026-05-01</td><td>20</td><td>43,898,479</td><td>2,194,924</td><td>548,731</td><td>5</td><td>11,630,619</td><td>5</td><td>13,654,056</td><td>5</td><td>10,324,140</td><td>5</td><td>8,289,664</td></tr></tbody>
+  <tbody><tr><td class="symbol">WDH</td><td>2026-05-08</td><td>2026-04-27 ~ 2026-05-01</td><td>692,444</td><td>2026-04-06 ~ 2026-05-01</td><td>20</td><td>3,371,049</td><td>168,552</td><td>42,138</td><td>5</td><td>1,151,540</td><td>5</td><td>637,460</td><td>5</td><td>889,605</td><td>5</td><td>692,444</td></tr><tr><td class="symbol">GOTU</td><td>2026-05-08</td><td>2026-04-27 ~ 2026-05-01</td><td>1,980,742</td><td>2026-04-06 ~ 2026-05-01</td><td>20</td><td>6,701,386</td><td>335,069</td><td>83,767</td><td>5</td><td>1,512,439</td><td>5</td><td>1,839,409</td><td>5</td><td>1,368,796</td><td>5</td><td>1,980,742</td></tr><tr><td class="symbol">GCT</td><td>2026-05-08</td><td>2026-04-27 ~ 2026-05-01</td><td>3,111,466</td><td>2026-04-06 ~ 2026-05-01</td><td>20</td><td>13,996,929</td><td>699,846</td><td>174,962</td><td>5</td><td>4,181,162</td><td>5</td><td>3,717,497</td><td>5</td><td>2,986,804</td><td>5</td><td>3,111,466</td></tr><tr><td class="symbol">WRD</td><td>2026-05-08</td><td>2026-04-27 ~ 2026-05-01</td><td>0</td><td>2026-04-06 ~ 2026-05-01</td><td>20</td><td>43,898,479</td><td>2,194,924</td><td>548,731</td><td>5</td><td>11,630,619</td><td>5</td><td>13,654,056</td><td>5</td><td>10,324,140</td><td>5</td><td>8,289,664</td></tr></tbody>
 </table>
-<div class="note">資料來源：FUTU OpenD &nbsp;|&nbsp; 依 SEC Rule 10b-18 標準計算 &nbsp;|&nbsp; ADTV 以股數計算</div>
+<h2 class="section-title">過去 10 周 5-Day Volume 歷史（W1＝最舊，W10＝最近）</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Ticker</th>
+      <th class="hist-header">W1<br><span class="week-period">2026-02-23 ~ 2026-02-27</span></th><th class="hist-header">W2<br><span class="week-period">2026-03-02 ~ 2026-03-06</span></th><th class="hist-header">W3<br><span class="week-period">2026-03-09 ~ 2026-03-13</span></th><th class="hist-header">W4<br><span class="week-period">2026-03-16 ~ 2026-03-20</span></th><th class="hist-header">W5<br><span class="week-period">2026-03-23 ~ 2026-03-27</span></th><th class="hist-header">W6<br><span class="week-period">2026-03-30 ~ 2026-04-03</span></th><th class="hist-header">W7<br><span class="week-period">2026-04-06 ~ 2026-04-10</span></th><th class="hist-header">W8<br><span class="week-period">2026-04-13 ~ 2026-04-17</span></th><th class="hist-header">W9<br><span class="week-period">2026-04-20 ~ 2026-04-24</span></th><th class="hist-header">W10<br><span class="week-period">2026-04-27 ~ 2026-05-01</span></th>
+    </tr>
+  </thead>
+  <tbody><tr><td class="symbol">WDH</td><td>1,865,221</td><td>1,213,099</td><td>875,837</td><td>947,895</td><td>1,744,926</td><td>1,066,778</td><td>1,151,540</td><td>637,460</td><td>889,605</td><td>692,444</td></tr><tr><td class="symbol">GOTU</td><td>2,075,925</td><td>3,331,664</td><td>1,522,634</td><td>2,322,204</td><td>2,732,675</td><td>1,803,775</td><td>1,512,439</td><td>1,839,409</td><td>1,368,796</td><td>1,980,742</td></tr><tr><td class="symbol">GCT</td><td>6,125,253</td><td>3,559,309</td><td>3,054,751</td><td>3,774,214</td><td>2,528,569</td><td>2,463,820</td><td>4,181,162</td><td>3,717,497</td><td>2,986,804</td><td>3,111,466</td></tr><tr><td class="symbol">WRD</td><td>13,268,872</td><td>16,737,491</td><td>18,321,404</td><td>39,674,802</td><td>60,652,581</td><td>23,341,629</td><td>11,630,619</td><td>0</td><td>0</td><td>0</td></tr></tbody>
+</table>
+<div class="note">資料來源：FUTU OpenD &nbsp;|&nbsp; 依 SEC Rule 10b-18 標準計算 &nbsp;|&nbsp; ADTV 以股數計算 &nbsp;|&nbsp; 自動排程：每周一 HKT 15:30</div>
 </body>
 </html>
