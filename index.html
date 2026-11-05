@@ -27,6 +27,18 @@
   tr:hover td { background: #ebf8ff; }
   td.symbol { font-weight: 700; color: #2b6cb0; font-size: 1rem; }
   .note { margin-top: 18px; font-size: 0.82rem; color: #a0aec0; }
+  .add-bar { display: flex; gap: 8px; align-items: center; margin: 20px 0 24px; padding: 14px 16px; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); flex-wrap: wrap; }
+  .add-bar label { font-weight: 600; color: #2d3748; font-size: 0.9rem; }
+  .add-bar input { padding: 8px 12px; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 0.95rem; outline: none; width: 140px; }
+  .add-bar input:focus { border-color: #2b6cb0; }
+  .add-bar button { padding: 8px 18px; border: none; border-radius: 6px; font-size: 0.9rem; cursor: pointer; color: #fff; }
+  .add-bar .btn-add { background: #38a169; }
+  .add-bar .btn-add:hover { background: #2f855a; }
+  .add-bar .btn-remove { background: #e53e3e; }
+  .add-bar .btn-remove:hover { background: #c53030; }
+  .add-bar #ticker-msg { font-size: 0.85rem; color: #2d3748; margin-left: 6px; }
+  .add-bar #ticker-msg.error { color: #e53e3e; }
+  .add-bar #ticker-msg.ok { color: #38a169; }
 </style>
 </head>
 <body>
@@ -57,9 +69,38 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('pw-input').addEventListener('keydown', e => { if (e.key === 'Enter') checkPw(); });
   document.getElementById('pw-input').focus();
 });
+async function tickerAction(action) {
+  const t = document.getElementById('new-ticker').value.trim().toUpperCase();
+  const msg = document.getElementById('ticker-msg');
+  if (!t) { msg.textContent = '請輸入 ticker'; msg.className = 'error'; return; }
+  msg.textContent = '處理中...'; msg.className = '';
+  const pw = document.getElementById('pw-input') ? document.getElementById('pw-input').value : '';
+  try {
+    const r = await fetch('http://127.0.0.1:5000/' + action, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ticker: t, password: pw})
+    });
+    const j = await r.json();
+    if (j.ok) { msg.textContent = '完成，頁面重整中...'; msg.className = 'ok'; setTimeout(() => location.reload(), 1200); }
+    else { msg.textContent = j.error || '失敗'; msg.className = 'error'; }
+  } catch (e) {
+    msg.textContent = '無法連接本機 server (127.0.0.1:5000)，請先啟動 adtv_server.py';
+    msg.className = 'error';
+  }
+}
+function addTicker() { tickerAction('add_ticker'); }
+function removeTicker() { tickerAction('remove_ticker'); }
 </script>
 <h1>ADTV Report</h1>
 <div class="subtitle">計算日期：2026-11-05 &nbsp;|&nbsp; 計算區間：2026-10-05 至 2026-10-30（前4完整日曆周）</div>
+<div class="add-bar">
+  <label>新增/移除股票：</label>
+  <input id="new-ticker" placeholder="e.g. ECX">
+  <button class="btn-add" onclick="addTicker()">新增</button>
+  <button class="btn-remove" onclick="removeTicker()">移除</button>
+  <span id="ticker-msg"></span>
+</div>
 <table>
   <thead>
     <tr>
