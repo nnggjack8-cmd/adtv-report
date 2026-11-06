@@ -106,10 +106,12 @@ function sha256(message) {
   }
   return out;
 }
+let SAVED_PW = '';
 function checkPw() {
   const val = document.getElementById('pw-input').value;
   const hex = sha256(val);
   if (hex === PW_HASH) {
+    SAVED_PW = val;
     document.getElementById('pw-overlay').style.display = 'none';
   } else {
     document.getElementById('pw-error').style.display = 'block';
@@ -125,8 +127,9 @@ async function tickerAction(action) {
   const t = document.getElementById('new-ticker').value.trim().toUpperCase();
   const msg = document.getElementById('ticker-msg');
   if (!t) { msg.textContent = '請輸入 ticker'; msg.className = 'error'; return; }
+  if (!SAVED_PW) { msg.textContent = '請先輸入密碼登入'; msg.className = 'error'; return; }
   msg.textContent = '處理中...'; msg.className = '';
-  const pw = document.getElementById('pw-input') ? document.getElementById('pw-input').value : '';
+  const pw = SAVED_PW;
   const apiBase = location.protocol + '//' + location.hostname;
   try {
     const r = await fetch(apiBase + '/' + action, {
