@@ -2,6 +2,7 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ADTV Report — 2026-11-09</title>
 <style>
   body { font-family: 'Segoe UI', Arial, sans-serif; background: #f7fafc; margin: 0; padding: 32px; color: #2d3748; }
@@ -11,185 +12,63 @@
   #pw-box p { color: #718096; font-size: 0.9rem; margin: 0 0 24px; }
   #pw-input { width: 100%; padding: 10px 14px; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 1rem; box-sizing: border-box; margin-bottom: 12px; outline: none; }
   #pw-btn { width: 100%; padding: 10px; background: #2b6cb0; color: #fff; border: none; border-radius: 6px; font-size: 1rem; cursor: pointer; }
-  #pw-btn:hover { background: #2c5282; }
   #pw-error { color: #e53e3e; font-size: 0.85rem; margin: 10px 0 0; display: none; }
   h1 { font-size: 1.6rem; margin-bottom: 4px; color: #1a202c; }
   h2.section-title { font-size: 1.15rem; margin: 36px 0 12px; color: #2d3748; border-left: 4px solid #553c9a; padding-left: 10px; }
   .subtitle { font-size: 0.95rem; color: #718096; margin-bottom: 28px; }
+  .table-wrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 8px; }
-  th { background: #2b6cb0; color: #fff; padding: 10px 12px; text-align: center; font-size: 0.82rem; font-weight: 600; }
+  th { background: #2b6cb0; color: #fff; padding: 10px 12px; text-align: center; font-size: 0.82rem; font-weight: 600; white-space: nowrap; }
   th.week-header { background: #2c7a7b; }
   th.week-sub { background: #319795; font-size: 0.78rem; }
   th.hist-header { background: #553c9a; font-size: 0.78rem; }
-  .week-period { font-size: 0.7rem; font-weight: 400; opacity: 0.85; }
-  td { padding: 10px 12px; text-align: center; font-size: 0.88rem; border-bottom: 1px solid #e2e8f0; }
+  th small { font-size: 0.7rem; font-weight: 400; opacity: 0.85; }
+  td { padding: 10px 12px; text-align: center; font-size: 0.88rem; border-bottom: 1px solid #e2e8f0; white-space: nowrap; }
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: #ebf8ff; }
   td.symbol { font-weight: 700; color: #2b6cb0; font-size: 1rem; }
-  .note { margin-top: 18px; font-size: 0.82rem; color: #a0aec0; }
-  .add-bar { display: flex; gap: 8px; align-items: center; margin: 20px 0 24px; padding: 14px 16px; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); flex-wrap: wrap; }
-  .add-bar label { font-weight: 600; color: #2d3748; font-size: 0.9rem; }
-  .add-bar input { padding: 8px 12px; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 0.95rem; outline: none; width: 140px; }
-  .add-bar input:focus { border-color: #2b6cb0; }
-  .add-bar button { padding: 8px 18px; border: none; border-radius: 6px; font-size: 0.9rem; cursor: pointer; color: #fff; }
-  .add-bar .btn-add { background: #38a169; }
-  .add-bar .btn-add:hover { background: #2f855a; }
-  .add-bar .btn-remove { background: #e53e3e; }
-  .add-bar .btn-remove:hover { background: #c53030; }
-  .add-bar #ticker-msg { font-size: 0.85rem; color: #2d3748; margin-left: 6px; }
-  .add-bar #ticker-msg.error { color: #e53e3e; }
-  .add-bar #ticker-msg.ok { color: #38a169; }
+  td.error { color: #e53e3e; }
+  .note { margin-top: 18px; font-size: 0.82rem; color: #718096; }
 </style>
 </head>
 <body>
-<div id="pw-overlay">
-  <div id="pw-box">
-    <h2>ADTV Report</h2>
-    <p>請輸入密碼以查看報告</p>
-    <input id="pw-input" type="password" placeholder="密碼">
-    <button id="pw-btn" onclick="checkPw()">確認</button>
-    <p id="pw-error">密碼錯誤，請重試</p>
-  </div>
-</div>
+<div id="pw-overlay"><div id="pw-box">
+  <h2>ADTV Report</h2><p>請輸入密碼以查看報告</p>
+  <input id="pw-input" type="password" placeholder="密碼">
+  <button id="pw-btn" onclick="checkPw()">確認</button>
+  <p id="pw-error">密碼錯誤，請重試</p>
+</div></div>
 <script>
 const PW_HASH = '615ed7fb1504b0c724a296d7a69e6c7b2f9ea2c57c1d8206c5afdf392ebdfd25';
-function sha256(message) {
-  const K = new Uint32Array([
-    0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
-    0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
-    0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
-    0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
-    0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
-    0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
-    0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
-    0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2
-  ]);
-  function rotr(x, n) { return (x >>> n) | (x << (32 - n)); }
-  const bytes = new TextEncoder().encode(message);
-  const bitLen = bytes.length * 8;
-  const withPad = bytes.length + 1 + ((56 - (bytes.length + 1) % 64 + 64) % 64) + 8;
-  const data = new Uint8Array(withPad);
-  data.set(bytes);
-  data[bytes.length] = 0x80;
-  const dv = new DataView(data.buffer);
-  dv.setUint32(withPad - 4, bitLen >>> 0, false);
-  dv.setUint32(withPad - 8, Math.floor(bitLen / 0x100000000), false);
-  const H = new Uint32Array([
-    0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19
-  ]);
-  const W = new Uint32Array(64);
-  for (let off = 0; off < withPad; off += 64) {
-    for (let i = 0; i < 16; i++) W[i] = dv.getUint32(off + i * 4, false);
-    for (let i = 16; i < 64; i++) {
-      const s0 = rotr(W[i-15],7) ^ rotr(W[i-15],18) ^ (W[i-15] >>> 3);
-      const s1 = rotr(W[i-2],17) ^ rotr(W[i-2],19) ^ (W[i-2] >>> 10);
-      W[i] = (W[i-16] + s0 + W[i-7] + s1) >>> 0;
-    }
-    let a=H[0],b=H[1],c=H[2],d=H[3],e=H[4],f=H[5],g=H[6],h=H[7];
-    for (let i = 0; i < 64; i++) {
-      const S1 = rotr(e,6) ^ rotr(e,11) ^ rotr(e,25);
-      const ch = (e & f) ^ (~e & g);
-      const t1 = (h + S1 + ch + K[i] + W[i]) >>> 0;
-      const S0 = rotr(a,2) ^ rotr(a,13) ^ rotr(a,22);
-      const mj = (a & b) ^ (a & c) ^ (b & c);
-      const t2 = (S0 + mj) >>> 0;
-      h=g; g=f; f=e; e=(d + t1) >>> 0; d=c; c=b; b=a; a=(t1 + t2) >>> 0;
-    }
-    H[0]=(H[0]+a)>>>0; H[1]=(H[1]+b)>>>0; H[2]=(H[2]+c)>>>0; H[3]=(H[3]+d)>>>0;
-    H[4]=(H[4]+e)>>>0; H[5]=(H[5]+f)>>>0; H[6]=(H[6]+g)>>>0; H[7]=(H[7]+h)>>>0;
-  }
-  let out = '';
-  for (let i = 0; i < 8; i++) {
-    let s = H[i].toString(16);
-    while (s.length < 8) s = '0' + s;
-    out += s;
-  }
-  return out;
-}
-let SAVED_PW = '';
-function checkPw() {
-  const val = document.getElementById('pw-input').value;
-  const hex = sha256(val);
+async function checkPw() {
+  const input = document.getElementById('pw-input');
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input.value));
+  const hex = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
   if (hex === PW_HASH) {
-    SAVED_PW = val;
     document.getElementById('pw-overlay').style.display = 'none';
   } else {
     document.getElementById('pw-error').style.display = 'block';
-    document.getElementById('pw-input').value = '';
-    document.getElementById('pw-input').focus();
+    input.value = '';
+    input.focus();
   }
 }
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('pw-input').addEventListener('keydown', e => { if (e.key === 'Enter') checkPw(); });
-  document.getElementById('pw-input').focus();
+  const input = document.getElementById('pw-input');
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') checkPw(); });
+  input.focus();
 });
-async function tickerAction(action) {
-  const t = document.getElementById('new-ticker').value.trim().toUpperCase();
-  const msg = document.getElementById('ticker-msg');
-  if (!t) { msg.textContent = '請輸入 ticker'; msg.className = 'error'; return; }
-  if (!SAVED_PW) { msg.textContent = '請先輸入密碼登入'; msg.className = 'error'; return; }
-  msg.textContent = '處理中...'; msg.className = '';
-  const pw = SAVED_PW;
-  const apiBase = location.protocol + '//' + location.hostname;
-  try {
-    const r = await fetch(apiBase + '/' + action, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ticker: t, password: pw})
-    });
-    const j = await r.json();
-    if (j.ok) { msg.textContent = '完成，頁面重整中...'; msg.className = 'ok'; setTimeout(() => location.reload(), 1200); }
-    else { msg.textContent = j.error || '失敗'; msg.className = 'error'; }
-  } catch (e) {
-    msg.textContent = '無法連接 server (' + apiBase + ')，請確認 adtv_server.py 已啟動';
-    msg.className = 'error';
-  }
-}
-function addTicker() { tickerAction('add_ticker'); }
-function removeTicker() { tickerAction('remove_ticker'); }
 </script>
 <h1>ADTV Report</h1>
-<div class="subtitle">計算日期：2026-11-09 &nbsp;|&nbsp; 計算區間：2026-10-12 至 2026-11-06（前4完整日曆周）</div>
-<div class="add-bar">
-  <label>新增/移除股票：</label>
-  <input id="new-ticker" placeholder="e.g. ECX">
-  <button class="btn-add" onclick="addTicker()">新增</button>
-  <button class="btn-remove" onclick="removeTicker()">移除</button>
-  <span id="ticker-msg"></span>
-</div>
-<table>
-  <thead>
-    <tr>
-      <th rowspan="2">Ticker</th>
-      <th rowspan="2">Trading Day</th>
-      <th rowspan="2">Trading Period<br>(Week 4)</th>
-      <th rowspan="2">5 Days Volume</th>
-      <th rowspan="2">Counting Period<br>(4 Weeks)</th>
-      <th rowspan="2">Counting Days</th>
-      <th rowspan="2">Sum of 4 Weeks Volume</th>
-      <th rowspan="2">ADTV</th>
-      <th rowspan="2">25% of ADTV</th>
-      <th colspan="2" class="week-header">W1<br><span class="week-period">2026-10-12 ~ 2026-10-16</span></th><th colspan="2" class="week-header">W2<br><span class="week-period">2026-10-19 ~ 2026-10-23</span></th><th colspan="2" class="week-header">W3<br><span class="week-period">2026-10-26 ~ 2026-10-30</span></th><th colspan="2" class="week-header">W4<br><span class="week-period">2026-11-02 ~ 2026-11-06</span></th>
-    </tr>
-    <tr>
-      <th class="week-sub">Days</th><th class="week-sub">Volume</th>
-      <th class="week-sub">Days</th><th class="week-sub">Volume</th>
-      <th class="week-sub">Days</th><th class="week-sub">Volume</th>
-      <th class="week-sub">Days</th><th class="week-sub">Volume</th>
-    </tr>
-  </thead>
-  <tbody><tr><td class="symbol">WDH</td><td>2026-11-09</td><td>2026-11-02 ~ 2026-11-06</td><td>1,047,502</td><td>2026-10-12 ~ 2026-11-06</td><td>20</td><td>4,624,243</td><td>231,212</td><td>57,803</td><td>5</td><td>1,420,191</td><td>5</td><td>1,037,988</td><td>5</td><td>1,118,562</td><td>5</td><td>1,047,502</td></tr><tr><td class="symbol">GOTU</td><td>2026-11-09</td><td>2026-11-02 ~ 2026-11-06</td><td>2,699,183</td><td>2026-10-12 ~ 2026-11-06</td><td>20</td><td>10,596,564</td><td>529,828</td><td>132,457</td><td>5</td><td>2,430,270</td><td>5</td><td>2,554,030</td><td>5</td><td>2,913,081</td><td>5</td><td>2,699,183</td></tr><tr><td class="symbol">GCT</td><td>2026-11-09</td><td>2026-11-02 ~ 2026-11-06</td><td>4,110,219</td><td>2026-10-12 ~ 2026-11-06</td><td>20</td><td>13,342,646</td><td>667,132</td><td>166,783</td><td>5</td><td>4,132,518</td><td>5</td><td>2,603,780</td><td>5</td><td>2,496,129</td><td>5</td><td>4,110,219</td></tr><tr><td class="symbol">WRD</td><td>2026-11-09</td><td>2026-11-02 ~ 2026-11-06</td><td>11,834,479</td><td>2026-10-12 ~ 2026-11-06</td><td>20</td><td>47,508,849</td><td>2,375,442</td><td>593,861</td><td>5</td><td>13,197,888</td><td>5</td><td>10,314,954</td><td>5</td><td>12,161,528</td><td>5</td><td>11,834,479</td></tr><tr><td class="symbol">MNSO</td><td>2026-11-09</td><td>2026-11-02 ~ 2026-11-06</td><td>5,538,977</td><td>2026-10-12 ~ 2026-11-06</td><td>20</td><td>28,132,923</td><td>1,406,646</td><td>351,662</td><td>5</td><td>10,701,541</td><td>5</td><td>6,197,289</td><td>5</td><td>5,695,116</td><td>5</td><td>5,538,977</td></tr><tr><td class="symbol">API</td><td>2026-11-09</td><td>2026-11-02 ~ 2026-11-06</td><td>626,698</td><td>2026-10-12 ~ 2026-11-06</td><td>20</td><td>2,978,652</td><td>148,933</td><td>37,233</td><td>5</td><td>1,223,217</td><td>5</td><td>573,104</td><td>5</td><td>555,633</td><td>5</td><td>626,698</td></tr><tr><td class="symbol">EH</td><td>2026-11-09</td><td>2026-11-02 ~ 2026-11-06</td><td>4,020,011</td><td>2026-10-12 ~ 2026-11-06</td><td>20</td><td>14,424,738</td><td>721,237</td><td>180,309</td><td>5</td><td>3,968,217</td><td>5</td><td>3,125,562</td><td>5</td><td>3,310,948</td><td>5</td><td>4,020,011</td></tr><tr><td class="symbol">GYRE</td><td>2026-11-09</td><td>2026-11-02 ~ 2026-11-06</td><td>1,512,163</td><td>2026-10-12 ~ 2026-11-06</td><td>20</td><td>3,729,424</td><td>186,471</td><td>46,618</td><td>5</td><td>581,502</td><td>5</td><td>711,439</td><td>5</td><td>924,320</td><td>5</td><td>1,512,163</td></tr><tr><td class="symbol">ECX</td><td>2026-11-09</td><td>2026-11-02 ~ 2026-11-06</td><td>7,469,085</td><td>2026-10-12 ~ 2026-11-06</td><td>20</td><td>17,826,772</td><td>891,339</td><td>222,835</td><td>5</td><td>4,257,734</td><td>5</td><td>2,614,269</td><td>5</td><td>3,485,684</td><td>5</td><td>7,469,085</td></tr><tr><td class="symbol">GRAB</td><td>2026-11-09</td><td>2026-11-02 ~ 2026-11-06</td><td>567,802,808</td><td>2026-10-12 ~ 2026-11-06</td><td>20</td><td>1,362,289,293</td><td>68,114,465</td><td>17,028,616</td><td>5</td><td>280,278,583</td><td>5</td><td>233,692,458</td><td>5</td><td>280,515,444</td><td>5</td><td>567,802,808</td></tr></tbody>
-</table>
-<h2 class="section-title">過去 10 周 5-Day Volume 歷史（W1＝最舊，W10＝最近）</h2>
-<table>
-  <thead>
-    <tr>
-      <th>Ticker</th>
-      <th class="hist-header">W1<br><span class="week-period">2026-08-31 ~ 2026-09-04</span></th><th class="hist-header">W2<br><span class="week-period">2026-09-07 ~ 2026-09-11</span></th><th class="hist-header">W3<br><span class="week-period">2026-09-14 ~ 2026-09-18</span></th><th class="hist-header">W4<br><span class="week-period">2026-09-21 ~ 2026-09-25</span></th><th class="hist-header">W5<br><span class="week-period">2026-09-28 ~ 2026-10-02</span></th><th class="hist-header">W6<br><span class="week-period">2026-10-05 ~ 2026-10-09</span></th><th class="hist-header">W7<br><span class="week-period">2026-10-12 ~ 2026-10-16</span></th><th class="hist-header">W8<br><span class="week-period">2026-10-19 ~ 2026-10-23</span></th><th class="hist-header">W9<br><span class="week-period">2026-10-26 ~ 2026-10-30</span></th><th class="hist-header">W10<br><span class="week-period">2026-11-02 ~ 2026-11-06</span></th>
-    </tr>
-  </thead>
-  <tbody><tr><td class="symbol">WDH</td><td>2,439,452</td><td>12,919,486</td><td>3,541,316</td><td>2,639,588</td><td>1,793,224</td><td>1,172,373</td><td>1,420,191</td><td>1,037,988</td><td>1,118,562</td><td>1,047,502</td></tr><tr><td class="symbol">GOTU</td><td>3,210,427</td><td>1,379,598</td><td>2,491,453</td><td>3,130,161</td><td>3,006,297</td><td>2,821,461</td><td>2,430,270</td><td>2,554,030</td><td>2,913,081</td><td>2,699,183</td></tr><tr><td class="symbol">GCT</td><td>2,992,079</td><td>2,122,232</td><td>3,564,711</td><td>4,058,659</td><td>2,615,652</td><td>3,994,089</td><td>4,132,518</td><td>2,603,780</td><td>2,496,129</td><td>4,110,219</td></tr><tr><td class="symbol">WRD</td><td>6,645,423</td><td>9,525,876</td><td>15,919,308</td><td>13,458,724</td><td>15,557,220</td><td>23,057,205</td><td>13,197,888</td><td>10,314,954</td><td>12,161,528</td><td>11,834,479</td></tr><tr><td class="symbol">MNSO</td><td>7,787,223</td><td>3,733,022</td><td>3,912,163</td><td>3,746,915</td><td>4,711,387</td><td>5,956,600</td><td>10,701,541</td><td>6,197,289</td><td>5,695,116</td><td>5,538,977</td></tr><tr><td class="symbol">API</td><td>581,181</td><td>413,059</td><td>583,513</td><td>1,126,825</td><td>481,983</td><td>458,589</td><td>1,223,217</td><td>573,104</td><td>555,633</td><td>626,698</td></tr><tr><td class="symbol">EH</td><td>3,211,949</td><td>2,822,327</td><td>3,190,991</td><td>2,223,144</td><td>3,565,229</td><td>4,187,916</td><td>3,968,217</td><td>3,125,562</td><td>3,310,948</td><td>4,020,011</td></tr><tr><td class="symbol">GYRE</td><td>251,555</td><td>498,510</td><td>1,676,030</td><td>1,219,081</td><td>715,706</td><td>574,087</td><td>581,502</td><td>711,439</td><td>924,320</td><td>1,512,163</td></tr><tr><td class="symbol">ECX</td><td>1,854,612</td><td>2,641,220</td><td>12,160,124</td><td>6,747,408</td><td>7,774,037</td><td>4,012,575</td><td>4,257,734</td><td>2,614,269</td><td>3,485,684</td><td>7,469,085</td></tr><tr><td class="symbol">GRAB</td><td>166,299,065</td><td>354,811,386</td><td>362,971,847</td><td>527,094,262</td><td>337,148,477</td><td>406,864,823</td><td>280,278,583</td><td>233,692,458</td><td>280,515,444</td><td>567,802,808</td></tr></tbody>
-</table>
-<div class="note">資料來源：FUTU OpenD &nbsp;|&nbsp; 依 SEC Rule 10b-18 標準計算 &nbsp;|&nbsp; ADTV 以股數計算 &nbsp;|&nbsp; 自動排程：每周一 HKT 15:30</div>
-</body>
-</html>
+<div class="subtitle">計算日期：2026-11-09 &nbsp;|&nbsp; 計算區間：2026-10-12 ~ 2026-11-06（前 4 個完整週）</div>
+<div class="table-wrap"><table><thead>
+  <tr><th rowspan="2">Ticker</th><th rowspan="2">Trading Day</th>
+  <th rowspan="2">Trading Period<br>(Week 4)</th><th rowspan="2">5 Days Volume</th>
+  <th rowspan="2">Counting Period<br>(4 Weeks)</th><th rowspan="2">Counting Days</th>
+  <th rowspan="2">Sum of 4 Weeks Volume</th><th rowspan="2">ADTV</th><th rowspan="2">25% of ADTV</th><th colspan="2" class="week-header">W1<br><small>2026-10-12 ~ 2026-10-16</small></th><th colspan="2" class="week-header">W2<br><small>2026-10-19 ~ 2026-10-23</small></th><th colspan="2" class="week-header">W3<br><small>2026-10-26 ~ 2026-10-30</small></th><th colspan="2" class="week-header">W4<br><small>2026-11-02 ~ 2026-11-06</small></th></tr>
+  <tr><th class="week-sub">Days</th><th class="week-sub">Volume</th><th class="week-sub">Days</th><th class="week-sub">Volume</th><th class="week-sub">Days</th><th class="week-sub">Volume</th><th class="week-sub">Days</th><th class="week-sub">Volume</th></tr>
+</thead><tbody><tr><td class="symbol">WDH</td><td>2026-11-09</td><td>2026-11-02 ~ 2026-11-06</td><td>1,047,502</td><td>2026-10-12 ~ 2026-11-06</td><td>20</td><td>4,624,243</td><td>231,212</td><td>57,803</td><td>5</td><td>1,420,191</td><td>5</td><td>1,037,988</td><td>5</td><td>1,118,562</td><td>5</td><td>1,047,502</td></tr><tr><td class="symbol">GOTU</td><td>2026-11-09</td><td>2026-11-02 ~ 2026-11-06</td><td>2,699,183</td><td>2026-10-12 ~ 2026-11-06</td><td>20</td><td>10,596,564</td><td>529,828</td><td>132,457</td><td>5</td><td>2,430,270</td><td>5</td><td>2,554,030</td><td>5</td><td>2,913,081</td><td>5</td><td>2,699,183</td></tr><tr><td class="symbol">GCT</td><td>2026-11-09</td><td>2026-11-02 ~ 2026-11-06</td><td>4,110,219</td><td>2026-10-12 ~ 2026-11-06</td><td>20</td><td>13,342,646</td><td>667,132</td><td>166,783</td><td>5</td><td>4,132,518</td><td>5</td><td>2,603,780</td><td>5</td><td>2,496,129</td><td>5</td><td>4,110,219</td></tr><tr><td class="symbol">WRD</td><td>2026-11-09</td><td>2026-11-02 ~ 2026-11-06</td><td>11,834,479</td><td>2026-10-12 ~ 2026-11-06</td><td>20</td><td>47,508,849</td><td>2,375,442</td><td>593,861</td><td>5</td><td>13,197,888</td><td>5</td><td>10,314,954</td><td>5</td><td>12,161,528</td><td>5</td><td>11,834,479</td></tr><tr><td class="symbol">MNSO</td><td>2026-11-09</td><td>2026-11-02 ~ 2026-11-06</td><td>5,538,977</td><td>2026-10-12 ~ 2026-11-06</td><td>20</td><td>28,132,923</td><td>1,406,646</td><td>351,662</td><td>5</td><td>10,701,541</td><td>5</td><td>6,197,289</td><td>5</td><td>5,695,116</td><td>5</td><td>5,538,977</td></tr><tr><td class="symbol">API</td><td>2026-11-09</td><td>2026-11-02 ~ 2026-11-06</td><td>626,698</td><td>2026-10-12 ~ 2026-11-06</td><td>20</td><td>2,978,652</td><td>148,933</td><td>37,233</td><td>5</td><td>1,223,217</td><td>5</td><td>573,104</td><td>5</td><td>555,633</td><td>5</td><td>626,698</td></tr><tr><td class="symbol">EH</td><td>2026-11-09</td><td>2026-11-02 ~ 2026-11-06</td><td>4,020,011</td><td>2026-10-12 ~ 2026-11-06</td><td>20</td><td>14,424,738</td><td>721,237</td><td>180,309</td><td>5</td><td>3,968,217</td><td>5</td><td>3,125,562</td><td>5</td><td>3,310,948</td><td>5</td><td>4,020,011</td></tr><tr><td class="symbol">GYRE</td><td>2026-11-09</td><td>2026-11-02 ~ 2026-11-06</td><td>1,512,163</td><td>2026-10-12 ~ 2026-11-06</td><td>20</td><td>3,729,424</td><td>186,471</td><td>46,618</td><td>5</td><td>581,502</td><td>5</td><td>711,439</td><td>5</td><td>924,320</td><td>5</td><td>1,512,163</td></tr></tbody></table></div>
+<h2 class="section-title">過去 10 週 5-Day Volume 歷史（W1＝最舊，W10＝最近）</h2>
+<div class="table-wrap"><table><thead><tr><th>Ticker</th><th class="hist-header">W1<br><small>2026-08-31 ~ 2026-09-04</small></th><th class="hist-header">W2<br><small>2026-09-07 ~ 2026-09-11</small></th><th class="hist-header">W3<br><small>2026-09-14 ~ 2026-09-18</small></th><th class="hist-header">W4<br><small>2026-09-21 ~ 2026-09-25</small></th><th class="hist-header">W5<br><small>2026-09-28 ~ 2026-10-02</small></th><th class="hist-header">W6<br><small>2026-10-05 ~ 2026-10-09</small></th><th class="hist-header">W7<br><small>2026-10-12 ~ 2026-10-16</small></th><th class="hist-header">W8<br><small>2026-10-19 ~ 2026-10-23</small></th><th class="hist-header">W9<br><small>2026-10-26 ~ 2026-10-30</small></th><th class="hist-header">W10<br><small>2026-11-02 ~ 2026-11-06</small></th></tr></thead>
+<tbody><tr><td class="symbol">WDH</td><td>2,439,452</td><td>12,919,486</td><td>3,541,316</td><td>2,639,588</td><td>1,793,224</td><td>1,172,373</td><td>1,420,191</td><td>1,037,988</td><td>1,118,562</td><td>1,047,502</td></tr><tr><td class="symbol">GOTU</td><td>3,210,427</td><td>1,379,598</td><td>2,491,453</td><td>3,130,161</td><td>3,006,297</td><td>2,821,461</td><td>2,430,270</td><td>2,554,030</td><td>2,913,081</td><td>2,699,183</td></tr><tr><td class="symbol">GCT</td><td>2,992,079</td><td>2,122,232</td><td>3,564,711</td><td>4,058,659</td><td>2,615,652</td><td>3,994,089</td><td>4,132,518</td><td>2,603,780</td><td>2,496,129</td><td>4,110,219</td></tr><tr><td class="symbol">WRD</td><td>6,645,423</td><td>9,525,876</td><td>15,919,308</td><td>13,458,724</td><td>15,557,220</td><td>23,057,205</td><td>13,197,888</td><td>10,314,954</td><td>12,161,528</td><td>11,834,479</td></tr><tr><td class="symbol">MNSO</td><td>7,787,223</td><td>3,733,022</td><td>3,912,163</td><td>3,746,915</td><td>4,711,387</td><td>5,956,600</td><td>10,701,541</td><td>6,197,289</td><td>5,695,116</td><td>5,538,977</td></tr><tr><td class="symbol">API</td><td>581,181</td><td>413,059</td><td>583,513</td><td>1,126,825</td><td>481,983</td><td>458,589</td><td>1,223,217</td><td>573,104</td><td>555,633</td><td>626,698</td></tr><tr><td class="symbol">EH</td><td>3,211,949</td><td>2,822,327</td><td>3,190,991</td><td>2,223,144</td><td>3,565,229</td><td>4,187,916</td><td>3,968,217</td><td>3,125,562</td><td>3,310,948</td><td>4,020,011</td></tr><tr><td class="symbol">GYRE</td><td>251,555</td><td>498,510</td><td>1,676,030</td><td>1,219,081</td><td>715,706</td><td>574,087</td><td>581,502</td><td>711,439</td><td>924,320</td><td>1,512,163</td></tr></tbody></table></div>
+<div class="note">資料來源：FUTU OpenD &nbsp;|&nbsp; ADTV 以股數計算</div>
+</body></html>
